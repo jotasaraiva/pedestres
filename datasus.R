@@ -22,4 +22,15 @@ mortes_veic <- datasus |>
 pedestres_datasus <- mortes_veic |> 
   filter(str_detect(CAUSABAS, "V0"))
 
-taxa <- nrow(pedestres_datasus)/nrow(mortes_veic) * 100
+taxa2022 <- nrow(pedestres_datasus)/nrow(mortes_veic) * 100
+
+mortes_veic_10anos <- datasus |> 
+  mutate(DTOBITO = dmy(DTOBITO)) |> 
+  filter(
+      str_detect(CAUSABAS, paste(paste0("V", seq(0, 8, 1)), collapse = "|"))
+  )
+
+pedestres_datasus_10anos <- mortes_veic_10anos |> 
+  filter(str_detect(CAUSABAS, "V0"))
+
+taxa10anos <- nrow(pedestres_datasus_10anos)/nrow(mortes_veic_10anos) * 100

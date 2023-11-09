@@ -1,0 +1,85 @@
+---
+title: "Pedestres 2022"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(roadtrafficdeaths)
+```
+
+```{r}
+rtdeaths |> head() |>  knitr::kable()
+```
+
+
+```{r}
+rtdeaths$ano_ocorrencia |> unique()
+```
+
+```{r}
+rtdeaths |> 
+  filter(
+    ano_ocorrencia %in% seq(2012, 2022, 1) & modal_vitima == "Pedestre"
+  ) |> 
+  summarise(.by = faixa_etaria_vitima, n = n()) |> 
+  ggplot(aes(y = n, x = faixa_etaria_vitima, fill = faixa_etaria_vitima)) + 
+    geom_bar(stat = "identity") +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1),
+          legend.position = "none")
+```
+
+```{r}
+rtdeaths |> 
+  filter(
+    ano_ocorrencia %in% seq(2012, 2022, 1)
+  ) |>
+  ggplot(aes(x = modal_vitima, y = idade_vitima, color = modal_vitima)) + 
+    geom_boxplot(outlier.alpha = 0.25) +
+    theme(legend.position = "none")
+```
+
+```{r}
+rtdeaths |> 
+  filter(
+    ano_ocorrencia %in% seq(2012, 2022, 1) & modal_vitima == "Pedestre"
+  ) |> 
+  summarise(.by = sexo_vitima, n = n()) |> 
+  drop_na() |> 
+  ggplot(aes(x = sexo_vitima, y = n, fill = sexo_vitima)) + 
+    geom_bar(stat = "identity") +
+    theme(legend.position = "none")
+```
+
+```{r}
+pedestres_sexo <- rtdeaths |> 
+  filter(
+    ano_ocorrencia %in% seq(2012, 2022, 1) & modal_vitima == "Pedestre"
+  ) |> 
+  summarise(.by = sexo_vitima, n = n())
+
+taxa_vitimas_sexo <- pedestres_sexo$n[pedestres_sexo$sexo_vitima == "Masculino"]/
+  sum(pedestres_sexo$n)
+```
+
+```{r}
+rtdeaths |> 
+  filter(ano_ocorrencia %in% seq(2012, 2022, 1)) |> 
+  summarise(.by = modal_vitima, n = n()) |>
+  ggplot(aes(x = modal_vitima, y = n, fill = modal_vitima)) + 
+    geom_bar(stat = "identity") +
+    theme(legend.position = "none")
+```
+
+```{r}
+rtdeaths |> 
+  filter(
+    ano_ocorrencia %in% seq(2012, 2022, 1) & modal_vitima == "Pedestre"
+  ) |> 
+  summarise(.by = escolaridade_vitima, n = n()) |> 
+  drop_na() |> 
+  ggplot(aes(x = escolaridade_vitima, y = n, fill = escolaridade_vitima)) + 
+    geom_bar(stat = "identity") +
+    theme(legend.position = "none")
+```
+
