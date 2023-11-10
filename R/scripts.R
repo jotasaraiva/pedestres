@@ -1,30 +1,33 @@
-extract_datasus <- function(df) {
+extract_datasus <- function(year_start, year_end) {
   
-  mortes_10anos <- rtdeaths |> 
-    filter(ano_ocorrencia %in% seq(2012,2022,1))
-  
-  mortes_pedestres_10anos <- rtdeaths |> 
-    filter(ano_ocorrencia %in% seq(2012,2022,1) & cod_modal == "V0")
-  
-  num_mortes_10anos <- nrow(mortes_10anos)
-  num_mortes_pedestres_10anos <- nrow(mortes_pedestres_10anos)
-  
-  taxa_10anos <- num_mortes_pedestres_10anos/num_mortes_10anos
-  
-  mortes_por_mes <- num_mortes_pedestres_10anos/(12*10)
-  mortes_por_dia <- num_mortes_pedestres_10anos/(10*365)
-  
-  return(list(
-    mortes_dia = mortes_por_dia,
-    mortes_mes = mortes_por_mes
-  ))
+  if(year_end < year_start) {
+    return(stop("year_start greater than year_end"))
+  } else {
+    mortes_por_anos <- rtdeaths |> 
+      filter(ano_ocorrencia %in% seq(year_start,year_end,1))
+    
+    mortes_pedestres_por_anos <- rtdeaths |> 
+      filter(ano_ocorrencia %in% seq(year_start,year_end,1) & cod_modal == "V0")
+    
+    num_mortes <- nrow(mortes_por_anos)
+    num_mortes_pedestres <- nrow(mortes_pedestres_por_anos)
+    
+    taxa_anos <- num_mortes_pedestres/num_mortes
+    
+    mortes_por_mes <- num_mortes_pedestres/(12*10)
+    mortes_por_dia <- num_mortes_pedestres/(10*365)
+    
+    return(list(
+      mortes_dia = mortes_por_dia,
+      mortes_mes = mortes_por_mes
+    ))
+  }
 }
 
 
 extract_pedestres_prf <- function(df) {
   
-  acidentes <- df |> 
-    mutate(ano = year(data_inversa)) |> 
+  acidentes <- df |>
     filter(tipo_envolvido == "Pedestre")
   
   acidentes_est_fisicos <- acidentes |> 
@@ -43,8 +46,7 @@ extract_pedestres_prf <- function(df) {
 
 extract_ocupantes_prf <- function(df) {
   
-  acidentes <- df |> 
-    mutate(ano == year(data_inversa)) |> 
+  acidentes <- df |>
     filter(tipo_envolvido %in% c("Condutor", "Passageiro"))
   
   acidentes_est_fisico <- acidentes |> 
