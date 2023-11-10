@@ -43,4 +43,4 @@ tabela <- data.frame(
             taxas_ocupantes_mortos$mortos_por_mes)
 )
 
-write_csv(tabela, file = "R/tabela_pedestres.csv")
+write_csv(tabela, file = "data/tabela_pedestres.csv")
