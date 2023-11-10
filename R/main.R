@@ -27,3 +27,20 @@ taxas_ocupantes_mortos <- list(
   mortos_por_mes = (dados_prf_ocupantes$ocupantes_mortos)/(5*12),
   mortos_por_dia = (dados_prf_ocupantes$ocupantes_mortos)/(5*365)
 )
+
+tabela <- data.frame(
+  Indicador = c("Pedestres mortos por dia em 10 anos (DataSUS)",
+                "Pedestres mortos por mês em 10 anos (DataSUS)",
+                "Pedestres mortos por dia em 5 anos (PRF)",
+                "Pedestres mortos por mês em 5 anos (PRF)",
+                "Ocupantes de veículos mortos por dia em 5 anos (PRF)",
+                "Ocupantes de veículos mortos por mês em 5 anos (PRF)"),
+  Valor = c(dados_datasus$mortes_dia,
+            dados_datasus$mortes_mes,
+            taxas_pedestres_mortos$mortos_por_dia,
+            taxas_pedestres_mortos$mortos_por_mes,
+            taxas_ocupantes_mortos$mortos_por_dia,
+            taxas_ocupantes_mortos$mortos_por_mes)
+)
+
+write_csv(tabela, file = "R/tabela_pedestres.csv")
