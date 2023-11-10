@@ -1,0 +1,100 @@
+---
+title: "Pedestres 2022"
+format: html
+---
+
+```{r}
+library(tidyverse)
+
+files <- list.files(here::here("data","datatran"))
+files <- here::here("data","datatran",files[tools::file_ext(files) == "csv"])
+```
+
+```{r}
+df2018 <- read_delim(files[1], delim = ";", locale = locale(decimal_mark = ","))
+df2019 <- read_delim(files[2], delim = ";", locale = locale(decimal_mark = ","))
+df2020 <- read_delim(files[3], delim = ";") |> 
+  mutate(km = as.numeric(km))
+df2021 <- read_delim(files[4], delim = ";", locale = locale(decimal_mark = ","))
+df2022 <- read_delim(files[5], delim = ";", locale = locale(decimal_mark = ","))
+```
+
+
+```{r}
+df <- bind_rows(df2018, df2019, df2020, df2021, df2022)
+```
+
+```{r}
+acidentes_pedestres <- df |> 
+  filter(tipo_acidente == "Atropelamento de Pedestre") |> 
+  mutate(ano = year(data_inversa))
+
+acidentes_pedestres
+```
+
+```{r}
+mortes_pedestres <- acidentes_pedestres |> 
+  summarise(.by = mortos, n = n())
+
+mortes_pedestres
+
+num_acidentes_pedestres <- 
+  nrow(acidentes_pedestres)
+
+num_mortes_pedestres <- mortes_pedestres$n[mortes_pedestres$mortos > 0] |> 
+  sum()
+
+taxa5anos <- num_mortes_pedestres/num_acidentes_pedestres
+
+num_mortes_pedestres/(5*12)
+```
+
+```{r}
+x <- read_delim(here::here("data","acidentes/acidentes2018.csv"), delim = ";")
+```
+
+```{r}
+x |> head()
+```
+```{r}
+x$tipo_envolvido |> unique()
+x$estado_fisico |>  unique()
+```
+
+```{r}
+library(tidyverse)
+
+files <- here::here("data","acidentes",
+                    list.files(here::here("data","acidentes")))
+
+df2 <- read_delim(
+  files,
+  delim = ";",
+  locale = locale(decimal_mark = ",",
+                  encoding = "Latin1")
+)
+```
+
+```{r}
+df2$tipo_envolvido |> unique()
+df2$estado_fisico |> unique()
+df2$data_inversa |> year() |> unique()
+```
+
+```{r}
+acidentes_pedestres <- df2 |> 
+  mutate(ano = year(data_inversa)) |> 
+  filter(tipo_envolvido == "Pedestre")
+
+estados_pedestres <- acidentes_pedestres |> 
+  summarise(.by = estado_fisico, n = n())
+
+num_pedestres_mortos <- 
+  estados_pedestres$n[estados_pedestres$estado_fisico == "Óbito"]
+
+num_pedestres_acidentes <- nrow(acidentes_pedestres)
+
+taxa_5anos <- num_pedestres_mortos/num_pedestres_acidentes
+
+mortos_por_mes <- num_pedestres_mortos/(5*12)
+```

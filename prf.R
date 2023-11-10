@@ -12,3 +12,4 @@ pedestres_fatais <- pedestres_prf |>
   filter(classificacao_acidente == "Com V\xedtimas Fatais")
 
 taxa <- nrow(pedestres_mortos)/nrow(pedestres_prf) * 100
+

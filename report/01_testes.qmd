@@ -82,4 +82,3 @@ rtdeaths |>
     geom_bar(stat = "identity") +
     theme(legend.position = "none")
 ```
-
